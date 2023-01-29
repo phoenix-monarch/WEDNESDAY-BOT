@@ -6,7 +6,10 @@ CMD = ["/", "."]
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(_, message):
-    await message.reply_text("Not dead but still here.. You have no love for me now.  Good.. You are not the same as you were before..use /start")
+    await message.reply_text("ɪ ᴀᴍ ᴡᴇᴅɴᴇsᴅᴀʏ \nᴍʏ ᴍᴀsᴛᴇʀ - ᴍɪʏᴜᴋɪ")
+ BUTTON = [
+        [
+            Button.url("【► network ◄】", f"https://t.me/psycho_association"),
 
 
 @Client.on_message(filters.command("ping", CMD))
