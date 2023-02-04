@@ -105,11 +105,3 @@ async def broadcast_messages(user_id, message):
         return False, "Error"
     except Exception as e:
         return False, "Error"
-
-
-
-
-
-
-
-
