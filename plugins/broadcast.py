@@ -16,31 +16,17 @@ async def verupikkals(bot, message):
     sts = await message.reply_text(
         text='Broadcasting your messages...'
     )
-    start_time = time.time()
     total_users = await db.total_users_count()
     done = 0
-    blocked = 0
-    deleted = 0
-    failed =0
-
-    success = 0
-    async for user in users:
-        pti, sh = await broadcast_messages(int(user['id']), b_msg)
-        if pti:
-            success += 1
-        elif pti == False:
-            if sh == "Blocked":
-                blocked+=1
-            elif sh == "Deleted":
-                deleted += 1
-            elif sh == "Error":
-                failed += 1
-        done += 1
-        await asyncio.sleep(2)
-        if not done % 20:
-            await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")    
-    time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
-    await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
+    failed = 0
+    for user in users:
+        try:
+            await b_msg.copy(user)
+            done = done + 1
+            await asyncio.sleep(2)
+        except:
+            failed = failed + 1
+    await sts.edit(f"Broadcast Completed:\nTotal Users {total_users}\nSuccess: {done}\nfailed: {failed}")
 
 
 
@@ -49,26 +35,17 @@ async def broadcast_group(bot, message):
     groups = await db.get_all_chats()
     b_msg = message.reply_to_message
     sts = await message.reply_text(text='Broadcasting your messages To Groups...')
-    start_time = time.time()
     total_groups = await db.total_chat_count()
     done = 0
-    failed = ""
-    success = 0
-    deleted = 0
-    async for group in groups:
-        pti, sh, ex = await broadcast_messages_group(int(group['id']), b_msg)
-        if pti == True:
-            if sh == "Succes":
-                success += 1
-        elif pti == False:
-            if sh == "deleted":
-                deleted+=1 
-                failed = ex         
-        done += 1
-        if not done % 20:
-            await sts.edit(f"Broadcast in progress:\n\nTotal Groups {total_groups}\nCompleted: {done} / {total_groups}\nSuccess: {success}\nDeleted: {deleted}")    
-    time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
-    await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Groups {total_groups}\nCompleted: {done} / {total_groups}\nSuccess: {success}\nDeleted: {deleted}\n\nFiled Reson:- {failed}")
+    failed = 0
+    for group in groups:
+        try:
+            await b_msg.copy(group)
+            done = done + 1
+            await asyncio.sleep(2)
+        except:
+            failed = failed + 1
+    await sts.edit(f"Broadcast Completed:\nTotal Chats {total_users}\nSuccess: {done}\nfailed: {failed}")
 
             
 async def broadcast_messages_group(chat_id, message):
